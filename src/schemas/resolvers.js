@@ -4,16 +4,14 @@ const resolvers = {
         //Get all posts
         posts: async (parent, args) => {
             const posts = await Post.find();
-            console.log(posts);
             return posts;
         },
 
         //Get a post
-        post: (parent, args) => {
+        post: async (parent, args) => {
             try {
-                const post = Post.findById(args.id)
-                console.log(post);
-                return(post);
+                const post = await Post.findById(args.id)
+                return post;
             } catch (err) {
                 throw new Error("Can't find post!")
             }
@@ -22,37 +20,34 @@ const resolvers = {
     Mutation: {
         //Create a Draft
         createDraft: async (parent, args) => {
-            const post = await new Post ({
+            const draft = await new Post ({
                 title: args.title,
                 content: args.content,
                 published: false,
             })
             try {
-            const savedPost = await post.save()
-            console.log(savedPost);
-            return savedPost;
+            const savedDraft = await draft.save()
+            return savedDraft;
             } catch (err) {
                 throw new Error("Can't save post!");
             }
         },
 
         //Delete a Post
-        deletePost: async(parent, args) => {
+        deletePost: async (parent, args) => {
             try {
-                const post = Post.findByIdAndDelete(args.id)
-                console.log(post);
-                return(post);
+                const post = await Post.findByIdAndDelete(args.id)
+                return post;
             } catch (err) {
                 throw new Error("Can't delete post!")
             }
         },
 
         //Update a Post
-        updatePost: async(parent, args) => {
+        updatePost: async (parent, args) => {
             try {
-                const post = Post.findByIdAndUpdate(args.id, {$set:{title: args.title, content: args.content}})
-                console.log(post);
-                return(post);
+                const post = await Post.findByIdAndUpdate(args.id, {$set:{title: args.title, content: args.content}})
+                return post;
             } catch (err) {
                 throw new Error("Can't update post!")
             }
